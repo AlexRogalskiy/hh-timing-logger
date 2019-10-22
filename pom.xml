@@ -10,7 +10,7 @@
 
   <groupId>ru.hh.logging</groupId>
   <artifactId>timing-logger</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
 
   <dependencies>
     <dependency>
@@ -24,7 +24,7 @@
   <scm>
     <connection>scm:git:git@github.com:hhru/hh-java-libs.git</connection>
     <developerConnection>scm:git:git@github.com:hhru/hh-java-libs.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>timing-logger-1.1</tag>
   </scm>
 
 </project>
