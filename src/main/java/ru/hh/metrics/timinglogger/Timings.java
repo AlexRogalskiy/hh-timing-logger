@@ -21,7 +21,6 @@ public class Timings implements Closeable {
   private final List<TimingsLogger> loggers;
   private final Optional<String> overallMetric;
   private final List<Tag> tags;
-  private final boolean withThreadLocal;
 
   private Instant overallTimerStartedAt = null;
   private Instant recentTimerStartedAt = null;
@@ -30,19 +29,15 @@ public class Timings implements Closeable {
     this.loggers = loggers;
     this.overallMetric = ofNullable(overallMetric);
     this.tags = tags;
-    this.withThreadLocal = withThreadLocal;
-  }
-
-  public static Timings get() {
-    return ofNullable(INSTANCE_STORAGE.get()).orElseThrow(() -> new RuntimeException("ThreadLocal mode is not set or start is not called"));
-  }
-
-  public void start() {
     if (withThreadLocal) {
       INSTANCE_STORAGE.set(this);
     }
     overallTimerStartedAt = Instant.now();
     recentTimerStartedAt = overallTimerStartedAt;
+  }
+
+  public static Timings get() {
+    return ofNullable(INSTANCE_STORAGE.get()).orElseThrow(() -> new RuntimeException("ThreadLocal mode is not set or start is not called"));
   }
 
   public void timeWithDefaultTag(String value) {
@@ -127,7 +122,7 @@ public class Timings implements Closeable {
       return this;
     }
 
-    public Timings build() {
+    public Timings start() {
       var loggers = new ArrayList<TimingsLogger>();
 
       if (statsDSender != null) {
