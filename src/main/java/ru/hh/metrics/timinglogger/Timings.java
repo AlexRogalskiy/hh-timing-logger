@@ -1,8 +1,6 @@
 package ru.hh.metrics.timinglogger;
 
 import java.io.Closeable;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +10,7 @@ import ru.hh.nab.metrics.StatsDSender;
 import ru.hh.nab.metrics.Tag;
 import static java.util.Optional.ofNullable;
 
-public class Timings implements Closeable {
+public final class Timings implements Closeable {
   private static ThreadLocal<Timings> INSTANCE_STORAGE = new ThreadLocal<>();
 
   private final static Tag WHOLE_TAG = new Tag("whole", "true");
@@ -22,8 +20,7 @@ public class Timings implements Closeable {
   private final Optional<String> overallMetric;
   private final List<Tag> tags;
 
-  private Instant overallTimerStartedAt = null;
-  private Instant recentTimerStartedAt = null;
+  private final StopWatch stopWatch;
 
   private Timings(List<TimingsLogger> loggers, String overallMetric, List<Tag> tags, boolean withThreadLocal) {
     this.loggers = loggers;
@@ -32,8 +29,7 @@ public class Timings implements Closeable {
     if (withThreadLocal) {
       INSTANCE_STORAGE.set(this);
     }
-    overallTimerStartedAt = Instant.now();
-    recentTimerStartedAt = overallTimerStartedAt;
+    this.stopWatch = new StopWatch();
   }
 
   public static Timings get() {
@@ -49,7 +45,7 @@ public class Timings implements Closeable {
   }
 
   public void time(String metricName, Tag... tags) {
-    time(calcRecentDuration(), metricName, tags);
+    time(stopWatch.calcRecentDuration(), metricName, tags);
   }
 
   public void timeWholeWithDefaultTag(String value) {
@@ -61,8 +57,7 @@ public class Timings implements Closeable {
   }
 
   public void timeWhole(String metricName, Tag... tags) {
-    long duration = Duration.between(overallTimerStartedAt, Instant.now()).toMillis();
-    time(duration, metricName, combineTagsIntoArray(List.of(WHOLE_TAG), tags));
+    time(stopWatch.calcWholeDuration(), metricName, combineTagsIntoArray(List.of(WHOLE_TAG), tags));
   }
 
   public void close() {
@@ -72,12 +67,6 @@ public class Timings implements Closeable {
   private void time(long duration, String metricName, Tag... tags) {
     Tag[] tagsToSend = combineTagsIntoArray(this.tags, tags);
     loggers.forEach(sender -> sender.time(duration, metricName, tagsToSend));
-  }
-
-  private long calcRecentDuration() {
-    long duration = Duration.between(recentTimerStartedAt, Instant.now()).toMillis();
-    recentTimerStartedAt = Instant.now();
-    return duration;
   }
 
   private static Tag[] combineTagsIntoArray(List<Tag> list, Tag... array) {
