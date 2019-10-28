@@ -1,6 +1,6 @@
-### timing-logger
-
-Библиотека для измерения и логирования длительности исполнения участков кода.
+# timing-logger
+## Библиотека для измерения и логирования длительности исполнения участков кода.
+### Единичные измерения
 Результаты измерений можно отправить в:
 * StatsD 
 * Slf4j
@@ -65,5 +65,24 @@ public class VeryDemandingSaveUpdateListener {
     Timings.get().time(new Tag("InListener", "finish_listener"));
   }
 }
-
+```
+### Поэтапные измерения - измерение перцентилей этапов процесса
+Результаты измерений можно отправить в StatsD 
+```java
+class Service {
+  enum SessionStage {
+    STAGE_ONE,
+    STAGE_TWO
+  }
+  /**
+    используется threadlocal таймер, т.е. этапы измеряются в одном потоке
+  */
+  public void stagedLogic() {
+    stageTimings.start();
+    stageOne();
+    stageTimings.markStage(SessionStage.STAGE_ONE);
+    stageTwo();
+    stageTimings.markStage(SessionStage.STAGE_TWO);
+  }
+}
 ```
