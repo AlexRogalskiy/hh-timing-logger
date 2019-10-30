@@ -25,6 +25,13 @@ public final class StageTimings<T extends Enum<T>> {
     instanceStorage.set(new StopWatch());
   }
 
+  // мы не ожидаем гонок в рамках одного потока
+  public void startIfNeeded() {
+    ofNullable(instanceStorage.get()).ifPresentOrElse(stopWatch -> {
+      //already started
+    }, this::start);
+  }
+
   public void markStage(T stage) {
     int duration = ofNullable(instanceStorage.get()).map(StopWatch::calcRecentDuration).map(Number::intValue)
       .orElseThrow(() -> new RuntimeException("No instance in threadlocal - maybe start is not called"));
