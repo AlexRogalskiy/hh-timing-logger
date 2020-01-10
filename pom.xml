@@ -3,9 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ru.headhunter.commons</groupId>
-    <artifactId>common-pom</artifactId>
-    <version>1.38</version>
+    <groupId>ru.hh.public-pom</groupId>
+    <artifactId>public-pom</artifactId>
+    <version>1.41</version>
   </parent>
 
   <groupId>ru.hh.logging</groupId>
@@ -21,8 +21,8 @@
   </dependencies>
 
   <scm>
-    <connection>scm:git:git@github.com:hhru/hh-java-libs.git</connection>
-    <developerConnection>scm:git:git@github.com:hhru/hh-java-libs.git</developerConnection>
+    <connection>scm:git:git@github.com:hhru/hh-timing-logger.git</connection>
+    <developerConnection>scm:git:git@github.com:hhru/hh-timing-logger.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
