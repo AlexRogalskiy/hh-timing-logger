@@ -20,7 +20,7 @@ public final class Timings implements Closeable {
   private final Optional<String> overallMetric;
   private final List<Tag> tags;
 
-  private final StopWatch stopWatch;
+  private StopWatch stopWatch;
 
   private Timings(List<TimingsLogger> loggers, String overallMetric, List<Tag> tags, boolean withThreadLocal) {
     this.loggers = loggers;
@@ -58,6 +58,10 @@ public final class Timings implements Closeable {
 
   public void timeWhole(String metricName, Tag... tags) {
     time(stopWatch.calcWholeDuration(), metricName, combineTagsIntoArray(List.of(WHOLE_TAG), tags));
+  }
+
+  public void resetTime() {
+    stopWatch = new StopWatch();
   }
 
   public void close() {
