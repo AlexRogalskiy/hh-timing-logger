@@ -16,7 +16,7 @@
     <dependency>
       <groupId>ru.hh.nab</groupId>
       <artifactId>nab-metrics</artifactId>
-      <version>4.21.3</version>
+      <version>4.22.24</version>
     </dependency>
   </dependencies>
 
