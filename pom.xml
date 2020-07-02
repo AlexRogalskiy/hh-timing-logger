@@ -10,15 +10,30 @@
 
   <groupId>ru.hh.logging</groupId>
   <artifactId>timing-logger</artifactId>
-  <version>1.2.4-SNAPSHOT</version>
+  <version>1.2.5-SNAPSHOT</version>
 
   <dependencies>
     <dependency>
       <groupId>ru.hh.nab</groupId>
       <artifactId>nab-metrics</artifactId>
-      <version>4.21.3</version>
+      <version>4.22.24</version>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>hh-public</id>
+      <name>hh public releases repository</name>
+      <url>https://m2.hh.ru/content/repositories/public-releases</url>
+      <releases>
+        <enabled>true</enabled>
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <scm>
     <connection>scm:git:git@github.com:hhru/hh-timing-logger.git</connection>
