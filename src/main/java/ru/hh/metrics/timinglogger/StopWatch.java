@@ -13,14 +13,16 @@ final class StopWatch {
   }
 
   public long calcRecentDuration() {
-    long duration = Duration.between(recentTimerStartedAt, Instant.now()).toMillis();
-    recentTimerStartedAt = Instant.now();
+    Instant now = Instant.now();
+    long duration = Duration.between(recentTimerStartedAt, now).toMillis();
+    recentTimerStartedAt = now;
     return duration;
   }
 
   public long calcWholeDuration() {
-    long duration = Duration.between(overallTimerStartedAt, Instant.now()).toMillis();
-    recentTimerStartedAt = Instant.now();
+    Instant now = Instant.now();
+    long duration = Duration.between(overallTimerStartedAt, now).toMillis();
+    recentTimerStartedAt = now;
     return duration;
   }
 }

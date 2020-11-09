@@ -3,6 +3,7 @@ package ru.hh.metrics.timinglogger;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import ru.hh.nab.metrics.Histograms;
 import ru.hh.nab.metrics.StatsDSender;
@@ -21,21 +22,25 @@ public final class StageTimings<T extends Enum<T>> {
     this.tags = new EnumMap<>(tags);
   }
 
-  public void start() {
+  public Staging start() {
     instanceStorage.set(new StopWatch());
+    return new Staging();
   }
-
   // мы не ожидаем гонок в рамках одного потока
-  public void startIfNeeded() {
-    ofNullable(instanceStorage.get()).ifPresentOrElse(stopWatch -> {
-      //already started
-    }, this::start);
+  public Staging startIfNeeded(Staging staging) {
+    return Optional.ofNullable(staging).orElseGet(this::start);
   }
 
-  public void markStage(T stage) {
-    int duration = ofNullable(instanceStorage.get()).map(StopWatch::calcRecentDuration).map(Number::intValue)
-      .orElseThrow(() -> new RuntimeException("No instance in threadlocal - maybe start is not called"));
-    histograms.save(duration, tags.get(stage));
+  public final class Staging {
+    private Staging() {
+
+    }
+
+    public void markStage(T stage) {
+      int duration = ofNullable(instanceStorage.get()).map(StopWatch::calcRecentDuration).map(Number::intValue)
+        .orElseThrow(() -> new RuntimeException("No instance in threadlocal - maybe start is not called"));
+      histograms.save(duration, tags.get(stage));
+    }
   }
 
   public static class Builder<T extends Enum<T>> {
